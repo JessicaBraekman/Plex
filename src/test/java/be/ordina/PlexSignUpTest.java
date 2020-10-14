@@ -47,17 +47,20 @@ public class PlexSignUpTest {
         WebElement signUpBtn = chromeDriver.findElement(By.xpath("//a[@class='signup button']"));
         signUpBtn.click();
 
-        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt("fedauth-iFrame"));
+       // wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt("fedauth-iFrame"));
+        Thread.sleep(3000);
         chromeDriver.switchTo().frame("fedauth-iFrame");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='email']")));
 
         WebElement emailInput = chromeDriver.findElement(By.xpath("//*[@id='email']"));
-        String email = "plexTester13@mailinator.com";
+        String email = "plexieTester999@mailinator.com";
         emailInput.sendKeys(email);
 
         WebElement passwordInput = chromeDriver.findElement(By.xpath("//*[@id='password']"));
         passwordInput.sendKeys("plexTester4");
         passwordInput.submit();
+
+        Thread.sleep(7000);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.className("NavBarAccountButton-avatarContainer-2fU5S_")));
         WebElement profile = chromeDriver.findElement(By.className("NavBarAccountButton-avatarContainer-2fU5S_"));
@@ -70,7 +73,5 @@ public class PlexSignUpTest {
         WebElement home = chromeDriver.findElement(By.className("/html/body/div[1]/div[4]/div/div/div[1]/div/div/div/div[1]/a/div[2]/div"));
 
         assertEquals(home.getText(), "HOME");*/
-
-
     }
 }

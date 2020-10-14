@@ -9,5 +9,8 @@
         <module name="Plex" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Plex" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
