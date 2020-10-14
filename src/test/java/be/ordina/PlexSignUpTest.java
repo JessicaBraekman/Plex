@@ -28,7 +28,7 @@ public class PlexSignUpTest {
      */
     @Before
     public void setUp(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\JeBk\\Documents\\AquaTraining\\Downloads\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
         chromeDriver = new ChromeDriver();
         chromeDriver.get("https://www.plex.tv/nl/");
         chromeDriver.manage().window().maximize();
@@ -41,14 +41,13 @@ public class PlexSignUpTest {
 
     @Test
     public void successfulRegistration() throws InterruptedException {
-        wait = new WebDriverWait(chromeDriver, 30);
-        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='plex']/div[2]/div/div[2]/button[2]")));
-        // WebElement signUpBtn = chromeDriver.findElement(By.xpath("//*[@id='plex']/div[2]/div/div[2]/button[2]"));
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"plex-site-container\"]/div[3]/div[2]/div[2]/div/div[1]/ul/li[2]/a")));
-        WebElement signUpBtn = chromeDriver.findElement(By.xpath("//*[@id=\"plex-site-container\"]/div[3]/div[2]/div[2]/div/div[1]/ul/li[2]/a"));
+        wait = new WebDriverWait(chromeDriver, 30);
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='signup button']")));
+        WebElement signUpBtn = chromeDriver.findElement(By.xpath("//a[@class='signup button']"));
         signUpBtn.click();
 
+        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt("fedauth-iFrame"));
         chromeDriver.switchTo().frame("fedauth-iFrame");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='email']")));
 
