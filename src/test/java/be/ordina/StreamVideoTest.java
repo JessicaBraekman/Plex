@@ -10,8 +10,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.Assert.assertEquals;
-
 
 /**
  * Unit test for simple App.
@@ -56,6 +54,8 @@ public class StreamVideoTest {
         WebElement passwordInput = chromeDriver.findElement(By.xpath("//*[@id='password']"));
         passwordInput.sendKeys("plexTester4");
         passwordInput.submit();
+
+        Thread.sleep(100000);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"plex-site-container\"]/div[3]/div[2]/div[2]/div/div[1]/ul/li[2]/a")));
         WebElement goToHome = chromeDriver.findElement(By.xpath("//*[@id=\"plex-site-container\"]/div[3]/div[2]/div[2]/div/div[1]/ul/li[2]/a"));

@@ -12,8 +12,8 @@ public class HomePage {
     private By btnSignUp = By.xpath("//a[@class='signup button']");
     private By btnSignIn = By.xpath("//a[@class='signin']");
 
-    private By textSignUpConfirmation = By.xpath("");
     private By textLoginConfirmation = By.xpath("//div[@class='SourceSidebarLink-title-1lgRT2 SidebarLink-title-2vaAAn']");
+    private By textLoginFailed = By.xpath("//span[@class='zxQoh']");
 
     public HomePage(WebDriver chromeDriver){
         this.chromeDriver = chromeDriver;
@@ -31,6 +31,12 @@ public class HomePage {
     public String getSuccessMessage(){
         wait.until(ExpectedConditions.visibilityOfElementLocated(textLoginConfirmation));
         String message = chromeDriver.findElement(textLoginConfirmation).getText();
+        return message;
+    }
+
+    public String getUnSuccessMessage(){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(textLoginFailed));
+        String message = chromeDriver.findElement(textLoginFailed).getText();
         return message;
     }
 }

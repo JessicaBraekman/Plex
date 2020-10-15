@@ -2,8 +2,8 @@ package be.ordina;
 
 
 import be.ordina.pages.HomePage;
-import be.ordina.pages.LoginModal;
-import be.ordina.pages.RegistrationModal;
+import be.ordina.pages.RegistrationAndLoginModal;
+import be.ordina.pages.StreamVideoModal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class AppTest
     private WebDriver chromeDriver;
     private WebDriverWait wait;
 
-    private String email = getRandomEmail()+"@mailinator.com";
+    private  String email;
     private String password = "PlexTest!";
 
     @Before
@@ -43,27 +43,66 @@ public class AppTest
     @Test
     public void successfulRegistration() throws InterruptedException {
         HomePage homePage = new HomePage(chromeDriver);
-        RegistrationModal registrationModal = new RegistrationModal(chromeDriver);
+        RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
 
         homePage.clickSignUp();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
 
-        registrationModal.registration(email, password);
+        email = getRandomEmail()+"@mailinator.com";
+        registrationModal.registrationOrLogin(email, password);
 
-        String message =homePage.getSuccessMessage();
+        String message = homePage.getSuccessMessage();
         assertTrue(message.contains("Home"));
+    }
+
+    @Test
+    public void unSuccessfulRegistration(){
+        HomePage homePage = new HomePage(chromeDriver);
+        RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
+
+        homePage.clickSignUp();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
+
+        registrationModal.registrationOrLogin("test@test.com", password);
+
+        String message = homePage.getUnSuccessMessage();
+        assertTrue(message.contains("E-mail is al in gebruik"));
+    }
+
+    @Test
+    public void unSuccessFullLogin(){
+        HomePage homePage = new HomePage(chromeDriver);
+        RegistrationAndLoginModal loginModal = new RegistrationAndLoginModal(chromeDriver);
+
+        homePage.clickSignIn();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
+
+        loginModal.registrationOrLogin("test@test.com", password);
+
+        String message = homePage.getUnSuccessMessage();
+        assertTrue(message.contains("De gebruikersnaam of wachtwoord is onjuist. Herhaalde pogingen kunnen tijdelijk het inloggen uitschakelen."));
     }
 
     @Test
     public void successfulStreaming() throws InterruptedException {
         HomePage homePage = new HomePage(chromeDriver);
-        LoginModal loginModal = new LoginModal(chromeDriver);
+        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
+        StreamVideoModal streamVideoModal = new StreamVideoModal(chromeDriver);
 
         homePage.clickSignIn();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
 
-        loginModal.login(email, password);
+        email = "PlexTester1@mailnator.com";
+        LoginModal.registrationOrLogin(email, password);
+        String message = homePage.getSuccessMessage();
+        assertTrue(message.contains("Home"));
 
+        LoginModal.goToHome();
+        streamVideoModal.playVideo();
     }
 
     public String getRandomEmail(){
