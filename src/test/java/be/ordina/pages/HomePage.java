@@ -2,6 +2,7 @@ package be.ordina.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage {
@@ -12,7 +13,7 @@ public class HomePage {
     private By btnSignIn = By.xpath("//a[@class='signin']");
 
     private By textSignUpConfirmation = By.xpath("");
-    private By textLoginConfirmation = By.xpath("");
+    private By textLoginConfirmation = By.xpath("//div[@class='SourceSidebarLink-title-1lgRT2 SidebarLink-title-2vaAAn']");
 
     public HomePage(WebDriver chromeDriver){
         this.chromeDriver = chromeDriver;
@@ -25,5 +26,11 @@ public class HomePage {
 
     public void clickSignIn(){
         chromeDriver.findElement(btnSignIn).click();
+    }
+
+    public String getSuccessMessage(){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(textLoginConfirmation));
+        String message = chromeDriver.findElement(textLoginConfirmation).getText();
+        return message;
     }
 }

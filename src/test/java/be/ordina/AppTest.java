@@ -14,6 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Unit test for simple App.
  */
@@ -49,7 +51,8 @@ public class AppTest
 
         registrationModal.registration(email, password);
 
-
+        String message =homePage.getSuccessMessage();
+        assertTrue(message.contains("Home"));
     }
 
     @Test
