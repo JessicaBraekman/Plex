@@ -96,10 +96,8 @@ public class AppTest
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
 
-        email = "PlexTester1@mailnator.com";
+        email = "PlexTester1@mailinator.com";
         LoginModal.registrationOrLogin(email, password);
-        String message = homePage.getSuccessMessage();
-        assertTrue(message.contains("Home"));
 
         LoginModal.goToHome();
         streamVideoModal.playVideo();

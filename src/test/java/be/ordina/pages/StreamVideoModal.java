@@ -9,12 +9,12 @@ public class StreamVideoModal {
     private final WebDriver chromeDriver;
     private WebDriverWait wait;
 
-    private By tbEmail = By.xpath("//*[@id='email']");
-    private By tbPassword = By.xpath("//*[@id='password']");
-
     private By btnPlayMovie = By.xpath("//*[@id='content']/div/div/div[2]/div[2]/div[1]/div[1]/div[2]/div/div/div[1]/div/a");
 
-    public StreamVideoModal(WebDriver chromeDriver){this.chromeDriver = chromeDriver;}
+    public StreamVideoModal(WebDriver chromeDriver){
+        this.chromeDriver = chromeDriver;
+        this.wait = new WebDriverWait(chromeDriver, 10);
+    }
 
     public void playVideo(){
         wait.until(ExpectedConditions.elementToBeClickable(btnPlayMovie));

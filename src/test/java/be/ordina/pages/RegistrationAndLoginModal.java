@@ -29,7 +29,7 @@ public class RegistrationAndLoginModal {
     }
 
     public void goToHome(){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(btnLaunch));
+        wait.until(ExpectedConditions.elementToBeClickable(btnLaunch));
         chromeDriver.findElement(btnLaunch).click();
     }
 }
