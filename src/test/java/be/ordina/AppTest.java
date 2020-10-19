@@ -47,8 +47,9 @@ public class AppTest
         HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
 
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
+      //  chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      //  homePage.clickAccept();
+
         homePage.clickSignUp();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
@@ -98,19 +99,10 @@ public class AppTest
 
     @Test
     public void successfulStreaming() throws InterruptedException {
-        HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
         StreamVideoModal streamVideoModal = new StreamVideoModal(chromeDriver);
 
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
-
-        homePage.clickSignIn();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
-
-        email = "PlexTester1@mailinator.com";
-        LoginModal.registrationOrLogin(email, password);
+        succesFullLogin();
 
         LoginModal.goToHome();
         streamVideoModal.playVideo();
@@ -118,29 +110,26 @@ public class AppTest
 
     @Test
     public void successfullSearch(){
-        HomePage homePage = new HomePage(chromeDriver);
-        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
         SearchModal searchModal = new SearchModal(chromeDriver);
+        succesFullLogin();
+       searchAMovie();
 
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
-
-        homePage.clickSignIn();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
-
-        email = "PlexTester1@mailinator.com";
-        LoginModal.registrationOrLogin(email, password);
-
-        LoginModal.goToHome();
-
-        searchModal.searchVideo(movie);
-
-       searchModal.selectSearchResult();
        String title = searchModal.searchFound();
        assertTrue(title.contains(movie));
     }
 
+    @Test
+    public void successfullAddToWatchlist(){
+        succesFullLogin();
+        searchAMovie();
+
+    }
+
+    /**
+     * getRanomEmail
+     * Generates an random e-email string for the registation
+     * @return random string
+     */
     public String getRandomEmail(){
         // create a string of uppercase and lowercase characters and numbers
         String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -177,5 +166,29 @@ public class AppTest
         return  randomString;
 
 
+    }
+
+    public void succesFullLogin(){
+        HomePage homePage = new HomePage(chromeDriver);
+        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
+
+        //chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        //homePage.clickAccept();
+
+        homePage.clickSignIn();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
+
+        email = "PlexTester1@mailinator.com";
+        LoginModal.registrationOrLogin(email, password);
+
+        LoginModal.goToHome();
+    }
+
+    public void searchAMovie(){
+        SearchModal searchModal = new SearchModal(chromeDriver);
+
+        searchModal.searchVideo(movie);
+        searchModal.selectSearchResult();
     }
 }
