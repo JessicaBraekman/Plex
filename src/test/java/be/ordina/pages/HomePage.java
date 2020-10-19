@@ -9,6 +9,8 @@ public class HomePage {
     private final WebDriver chromeDriver;
     private WebDriverWait wait;
 
+    private By btnAccept = By.xpath("/html/body/div[9]/div/div/div[3]/a[2]");
+
     private By btnSignUp = By.xpath("//a[@class='signup button']");
     private By btnSignIn = By.xpath("//a[@class='signin']");
 
@@ -18,6 +20,11 @@ public class HomePage {
     public HomePage(WebDriver chromeDriver){
         this.chromeDriver = chromeDriver;
         this.wait = new WebDriverWait(chromeDriver, 10);
+    }
+
+    public void clickAccept(){
+        wait.until(ExpectedConditions.elementToBeClickable(btnAccept));
+        chromeDriver.findElement(btnAccept).click();
     }
 
     public void clickSignUp(){

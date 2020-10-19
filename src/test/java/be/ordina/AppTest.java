@@ -25,8 +25,9 @@ public class AppTest
     private WebDriver chromeDriver;
     private WebDriverWait wait;
 
-    private  String email;
+    private String email;
     private String password = "PlexTest!";
+    private String movie = "Bonanza";
 
     @Before
     public void setUp(){
@@ -46,6 +47,8 @@ public class AppTest
         HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
 
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
         homePage.clickSignUp();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
@@ -62,6 +65,9 @@ public class AppTest
         HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
 
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
+
         homePage.clickSignUp();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
@@ -77,6 +83,9 @@ public class AppTest
         HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal loginModal = new RegistrationAndLoginModal(chromeDriver);
 
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
+
         homePage.clickSignIn();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
@@ -84,7 +93,7 @@ public class AppTest
         loginModal.registrationOrLogin("test@test.com", password);
 
         String message = homePage.getUnSuccessMessage();
-        assertTrue(message.contains("De gebruikersnaam of wachtwoord is onjuist. Herhaalde pogingen kunnen tijdelijk het inloggen uitschakelen."));
+        assertTrue(message.contains("De gebruikersnaam of wachtwoord is onjuist"));
     }
 
     @Test
@@ -92,6 +101,9 @@ public class AppTest
         HomePage homePage = new HomePage(chromeDriver);
         RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
         StreamVideoModal streamVideoModal = new StreamVideoModal(chromeDriver);
+
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
 
         homePage.clickSignIn();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -110,6 +122,9 @@ public class AppTest
         RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
         SearchModal searchModal = new SearchModal(chromeDriver);
 
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
+
         homePage.clickSignIn();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
@@ -119,11 +134,11 @@ public class AppTest
 
         LoginModal.goToHome();
 
-        searchModal.searchVideo("Aspe");
-        searchModal.selectSearchResult();
-     //   String message = searchModal.searchContainer();
-       // assertTrue(message.contains("Search all sources..."));
+        searchModal.searchVideo(movie);
 
+       searchModal.selectSearchResult();
+       String title = searchModal.searchFound();
+       assertTrue(title.contains(movie));
     }
 
     public String getRandomEmail(){
