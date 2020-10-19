@@ -3,6 +3,7 @@ package be.ordina;
 
 import be.ordina.pages.HomePage;
 import be.ordina.pages.RegistrationAndLoginModal;
+import be.ordina.pages.SearchModal;
 import be.ordina.pages.StreamVideoModal;
 import org.junit.After;
 import org.junit.Before;
@@ -101,6 +102,28 @@ public class AppTest
 
         LoginModal.goToHome();
         streamVideoModal.playVideo();
+    }
+
+    @Test
+    public void successfullSearch(){
+        HomePage homePage = new HomePage(chromeDriver);
+        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
+        SearchModal searchModal = new SearchModal(chromeDriver);
+
+        homePage.clickSignIn();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
+
+        email = "PlexTester1@mailinator.com";
+        LoginModal.registrationOrLogin(email, password);
+
+        LoginModal.goToHome();
+
+        searchModal.searchVideo("Aspe");
+        searchModal.selectSearchResult();
+     //   String message = searchModal.searchContainer();
+       // assertTrue(message.contains("Search all sources..."));
+
     }
 
     public String getRandomEmail(){
