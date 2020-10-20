@@ -1,10 +1,7 @@
 package be.ordina;
 
 
-import be.ordina.pages.HomePage;
-import be.ordina.pages.RegistrationAndLoginModal;
-import be.ordina.pages.SearchModal;
-import be.ordina.pages.StreamVideoModal;
+import be.ordina.pages.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +26,24 @@ public class AppTest
     private String password = "PlexTest!";
     private String movie = "Bonanza";
 
+    private HomePage homePage;
+    private RegistrationAndLoginModal registrationAndLoginModal;
+    private StreamVideoModal streamVideoModal;
+    private SearchModal searchModal;
+    private MovieModal movieModal;
+
     @Before
     public void setUp(){
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
         chromeDriver = new ChromeDriver();
         chromeDriver.get("https://www.plex.tv/nl/");
         chromeDriver.manage().window().maximize();
+
+        homePage = new HomePage(chromeDriver);
+        registrationAndLoginModal = new RegistrationAndLoginModal(chromeDriver);
+        streamVideoModal = new StreamVideoModal(chromeDriver);
+        searchModal = new SearchModal(chromeDriver);
+        movieModal = new MovieModal(chromeDriver);
     }
 
     @After
@@ -44,18 +53,8 @@ public class AppTest
 
     @Test
     public void successfulRegistration() throws InterruptedException {
-        HomePage homePage = new HomePage(chromeDriver);
-        RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
-
-      //  chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-      //  homePage.clickAccept();
-
-        homePage.clickSignUp();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
-
         email = getRandomEmail()+"@mailinator.com";
-        registrationModal.registrationOrLogin(email, password);
+        registration(email);
 
         String message = homePage.getSuccessMessage();
         assertTrue(message.contains("Home"));
@@ -63,17 +62,8 @@ public class AppTest
 
     @Test
     public void unSuccessfulRegistration(){
-        HomePage homePage = new HomePage(chromeDriver);
-        RegistrationAndLoginModal registrationModal = new RegistrationAndLoginModal(chromeDriver);
-
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
-
-        homePage.clickSignUp();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
-
-        registrationModal.registrationOrLogin("test@test.com", password);
+        email = "test@test.com";
+        registration(email);
 
         String message = homePage.getUnSuccessMessage();
         assertTrue(message.contains("E-mail is al in gebruik"));
@@ -81,17 +71,8 @@ public class AppTest
 
     @Test
     public void unSuccessFullLogin(){
-        HomePage homePage = new HomePage(chromeDriver);
-        RegistrationAndLoginModal loginModal = new RegistrationAndLoginModal(chromeDriver);
-
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
-
-        homePage.clickSignIn();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
-
-        loginModal.registrationOrLogin("test@test.com", password);
+        email = "test@test.be";
+        login(email);
 
         String message = homePage.getUnSuccessMessage();
         assertTrue(message.contains("De gebruikersnaam of wachtwoord is onjuist"));
@@ -99,19 +80,17 @@ public class AppTest
 
     @Test
     public void successfulStreaming() throws InterruptedException {
-        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
-        StreamVideoModal streamVideoModal = new StreamVideoModal(chromeDriver);
+        email = "PlexTester1@mailinator.com";
+        login(email);
 
-        succesFullLogin();
-
-        LoginModal.goToHome();
+        registrationAndLoginModal.goToHome();
         streamVideoModal.playVideo();
     }
 
     @Test
     public void successfullSearch(){
-        SearchModal searchModal = new SearchModal(chromeDriver);
-        succesFullLogin();
+        email = "PlexTester1@mailinator.com";
+        login(email);
        searchAMovie();
 
        String title = searchModal.searchFound();
@@ -120,9 +99,18 @@ public class AppTest
 
     @Test
     public void successfullAddToWatchlist(){
-        succesFullLogin();
+        email = "PlexTester1@mailinator.com";
+        login(email);
         searchAMovie();
+        addMovieToWatchList();
+    }
 
+    @Test
+    public void successfullMarkAsPlayed(){
+        email = "PlexTester1@mailinator.com";
+        login(email);
+        searchAMovie();
+        markAMovieAsPlayed();
     }
 
     /**
@@ -168,27 +156,40 @@ public class AppTest
 
     }
 
-    public void succesFullLogin(){
-        HomePage homePage = new HomePage(chromeDriver);
-        RegistrationAndLoginModal LoginModal= new RegistrationAndLoginModal(chromeDriver);
+    public  void registration(String email){
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
 
-        //chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        //homePage.clickAccept();
+        homePage.clickSignUp();
+        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        chromeDriver.switchTo().frame("fedauth-iFrame");
+
+        registrationAndLoginModal.registrationOrLogin(email, password);
+    }
+
+    public void login(String email){
+        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        homePage.clickAccept();
 
         homePage.clickSignIn();
         chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         chromeDriver.switchTo().frame("fedauth-iFrame");
 
-        email = "PlexTester1@mailinator.com";
-        LoginModal.registrationOrLogin(email, password);
+        registrationAndLoginModal.registrationOrLogin(email, password);
 
-        LoginModal.goToHome();
+        registrationAndLoginModal.goToHome();
     }
 
     public void searchAMovie(){
-        SearchModal searchModal = new SearchModal(chromeDriver);
-
         searchModal.searchVideo(movie);
         searchModal.selectSearchResult();
+    }
+
+    public void addMovieToWatchList(){
+        movieModal.addMovieToWatchList();
+    }
+
+    public void markAMovieAsPlayed(){
+        movieModal.markAsPlayed();
     }
 }
