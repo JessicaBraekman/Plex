@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class RegistrationAndLoginModal {
-    private final WebDriver chromeDriver;
+    private final WebDriver driver;
     private WebDriverWait wait;
 
     private By tbEmail = By.xpath("//*[@id='email']");
@@ -15,21 +15,21 @@ public class RegistrationAndLoginModal {
 
     private By btnLaunch = By.xpath("//a[@class='launch button']");
 
-    public RegistrationAndLoginModal(WebDriver chromeDriver) {
-        this.chromeDriver=chromeDriver;
-        this.wait = new WebDriverWait(chromeDriver, 10);
+    public RegistrationAndLoginModal(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, 10);
     }
 
     public void registrationOrLogin(String email, String password){
-        chromeDriver.findElement(tbEmail).sendKeys(email);
+        driver.findElement(tbEmail).sendKeys(email);
 
-        WebElement elPassword =chromeDriver.findElement(tbPassword);
+        WebElement elPassword = driver.findElement(tbPassword);
         elPassword.sendKeys(password);
         elPassword.submit();
     }
 
     public void goToHome(){
         wait.until(ExpectedConditions.elementToBeClickable(btnLaunch));
-        chromeDriver.findElement(btnLaunch).click();
+        driver.findElement(btnLaunch).click();
     }
 }

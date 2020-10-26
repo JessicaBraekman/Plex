@@ -1,12 +1,11 @@
 package be.ordina;
 
-
+import be.ordina.browser.browserGetter;
 import be.ordina.pages.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Random;
@@ -19,7 +18,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class AppTest 
 {
-    private WebDriver chromeDriver;
+    private browserGetter browserGetter = new browserGetter();
+    private WebDriver driver;
     private WebDriverWait wait;
 
     private String email;
@@ -28,27 +28,23 @@ public class AppTest
 
     private HomePage homePage;
     private RegistrationAndLoginModal registrationAndLoginModal;
-    private StreamVideoModal streamVideoModal;
-    private SearchModal searchModal;
-    private MovieModal movieModal;
+    private MoviePage moviePage;
 
     @Before
     public void setUp(){
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
-        chromeDriver = new ChromeDriver();
-        chromeDriver.get("https://www.plex.tv/nl/");
-        chromeDriver.manage().window().maximize();
+        driver = browserGetter.getChromeDriver();
+   //     driver = browserGetter.getFireFoxDriver();
+        driver.get("https://www.plex.tv/nl/");
 
-        homePage = new HomePage(chromeDriver);
-        registrationAndLoginModal = new RegistrationAndLoginModal(chromeDriver);
-        streamVideoModal = new StreamVideoModal(chromeDriver);
-        searchModal = new SearchModal(chromeDriver);
-        movieModal = new MovieModal(chromeDriver);
+
+        homePage = new HomePage(driver);
+        registrationAndLoginModal = new RegistrationAndLoginModal(driver);
+        moviePage = new MoviePage(driver);
     }
 
     @After
     public void tearDown(){
-        // chromeDriver.close();
+        driver.close();
     }
 
     @Test
@@ -84,7 +80,7 @@ public class AppTest
         login(email);
 
         registrationAndLoginModal.goToHome();
-        streamVideoModal.playVideo();
+        moviePage.playVideo();
     }
 
     @Test
@@ -93,7 +89,7 @@ public class AppTest
         login(email);
        searchAMovie();
 
-       String title = searchModal.searchFound();
+       String title = moviePage.searchFound();
        assertTrue(title.contains(movie));
     }
 
@@ -157,23 +153,23 @@ public class AppTest
     }
 
     public  void registration(String email){
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        homePage.clickAccept();
+       // driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        //homePage.clickAccept();
 
         homePage.clickSignUp();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        driver.switchTo().frame("fedauth-iFrame");
 
         registrationAndLoginModal.registrationOrLogin(email, password);
     }
 
     public void login(String email){
-        chromeDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         homePage.clickAccept();
 
         homePage.clickSignIn();
-        chromeDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        chromeDriver.switchTo().frame("fedauth-iFrame");
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        driver.switchTo().frame("fedauth-iFrame");
 
         registrationAndLoginModal.registrationOrLogin(email, password);
 
@@ -181,15 +177,15 @@ public class AppTest
     }
 
     public void searchAMovie(){
-        searchModal.searchVideo(movie);
-        searchModal.selectSearchResult();
+        moviePage.searchVideo(movie);
+        moviePage.selectSearchResult();
     }
 
     public void addMovieToWatchList(){
-        movieModal.addMovieToWatchList();
+        moviePage.addMovieToWatchList();
     }
 
     public void markAMovieAsPlayed(){
-        movieModal.markAsPlayed();
+        moviePage.markAsPlayed();
     }
 }
